@@ -8,7 +8,7 @@ class CellTest extends UnitSpec {
     cell.neighbouringCells.size should be(8)
   }
 
-  it should "have neighbours within one unit on each axis" in {
+  it should "have all neighbours within one unit on each axis" in {
     val cell = Cell(0, 0)
     val neighbouringCells = cell.neighbouringCells
     neighbouringCells.forall { testCell: Cell => math.abs(testCell.x - cell.x) < 2 } should be(true)

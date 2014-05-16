@@ -1,6 +1,12 @@
 package com.foomoo.gol.model
 
+/**
+ * Represents a cell position on an x/y grid.
+ */
 case class Cell(x: Int, y: Int) {
+  /**
+   * Returns a sequence of neighbouring cell positions to this cell.
+   */
   def neighbouringCells: Seq[Cell] = {
     for {
       x <- -1 to 1

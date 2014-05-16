@@ -1,5 +1,7 @@
 package com.foomoo.gol.model
 
+import scala.language.postfixOps
+
 /**
  * Represents the alive cells in a generation of Game Of Life.
  */
@@ -13,17 +15,20 @@ class GofModel (cells: Set[Cell]) {
   }
   
   /**
-   * Return a set of dead cells which have a live cell as a neighbour.
+   * The set of dead cells which have a live cell as a neighbour.
    */
-  def deadCellsWithLiveNeighbours(): Set[Cell] = cells flatMap(_.neighbouringCells) toSet 
+  lazy val deadCellsWithLiveNeighbours: Set[Cell] = cells flatMap(_.neighbouringCells) toSet 
   
-//  def tick(): GofModel = {
-//    // Build a set of all dead cells which are neighbours to live cells.
-//    // These will be candidate cells to become live if they have exactly 3 live neighbours.
-//    val candidateCellsForLife = 
-//    
-//    val mutMap: scala.collection.mutable.HashMap = 
-//  }
+  /**
+   * Perform a tick, returning a new GofModel representing all cells that are live after the tick.
+   */
+  def tick(): Unit = {
+    // Build a set of all dead cells which are neighbours to live cells.
+    // These will be candidate cells to become live if they have exactly 3 live neighbours.
+    //val candidateCellsForLife = deadCellsWithLiveNeighbours
+    
+    //val mutMap: scala.collection.mutable.HashMap = 
+  }
 }
 
 object GofModel {
