@@ -10,8 +10,9 @@ import com.foomoo.gol.model.Cell
 import com.foomoo.gol.model.GofModel
 
 object GofUI extends SimpleSwingApplication {
-  val grid = new OnOffGrid(20, 20)
-  grid.onOff = gridCellIsLive
+  val grid = new OnOffGrid(20, 20) {
+    onOff = gridCellIsLive
+  }
 
   val tickButton = new Button {
     text = "Tick"
