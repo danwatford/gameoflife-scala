@@ -32,10 +32,15 @@ class GofModel(cells: Set[Cell], cellFilter: Cell => Boolean) {
       val liveNeighbourCount = liveNeighbours(cell).size
       liveNeighbourCount == 2 || liveNeighbourCount == 3
     }
-    
+
     val bringToLifeCells = deadCellsWithLiveNeighbours.filter(liveNeighbours(_).size == 3)
 
     new GofModel(keepAliveCells ++ bringToLifeCells, cellFilter)
+  }
+
+  def toggleCell(cell: Cell): GofModel = {
+    if (getCells.contains(cell)) new GofModel(getCells - cell, cellFilter)
+    else new GofModel(getCells + cell, cellFilter)
   }
 }
 
