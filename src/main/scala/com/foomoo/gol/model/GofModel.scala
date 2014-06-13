@@ -1,6 +1,7 @@
 package com.foomoo.gol.model
 
 import scala.language.postfixOps
+import scala.util.Random
 
 /**
  * Represents the live cells in a generation of Game Of Life.
@@ -47,4 +48,14 @@ class GofModel(cells: Set[Cell], cellFilter: Cell => Boolean) {
 object GofModel {
   def apply(cells: Cell*): GofModel = new GofModel(cells.toSet, (_ => true))
   def apply(cellFilter: Cell => Boolean, cells: Cell*): GofModel = new GofModel(cells.toSet, cellFilter)
+
+  def random(width: Int, height: Int): GofModel = {
+    val cells = for {
+      x <- 0 until width
+      y <- 0 until height
+      if Random.nextBoolean
+    } yield Cell(x, y)
+    
+    new GofModel(cells.toSet, (_ => true))
+  }
 }

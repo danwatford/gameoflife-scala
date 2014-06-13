@@ -17,6 +17,10 @@ object GofUI extends SimpleSwingApplication {
   val tickButton = new Button {
     text = "Tick"
   }
+  
+  val randomModelButton = new Button {
+    text = "Random"
+  }
 
   def top = new MainFrame {
     title = "Game of Life"
@@ -24,14 +28,20 @@ object GofUI extends SimpleSwingApplication {
     contents = new BorderPanel {
       layout(grid) = BorderPanel.Position.Center
       layout(tickButton) = BorderPanel.Position.West
+      layout(randomModelButton) = BorderPanel.Position.North
     }
 
     listenTo(tickButton)
+    listenTo(randomModelButton)
     listenTo(grid)
 
     reactions += {
       case ButtonClicked(`tickButton`) =>
         model = model.tick
+        grid.repaint
+        
+      case ButtonClicked(`randomModelButton`) =>
+        model = GofModel.random(20, 20)
         grid.repaint
 
       case CellClicked(`grid`, x, y) =>
