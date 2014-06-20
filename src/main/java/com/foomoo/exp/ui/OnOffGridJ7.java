@@ -5,19 +5,22 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.util.Random;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class OnOffGridJ7 extends JPanel {
+public class OnOffGridJ7 extends JPanel implements MouseListener {
 	private int cellsX;
 	private int cellsY;
 	private int cellWidth;
 	private int cellHeight;
-	
-	private Random random = new Random();
+
+	private OnOffGridModel model;
+
+	private ArrayList<OnOffGridListener> listeners = new ArrayList<>();
 
 	public OnOffGridJ7(int cellsX, int cellsY) {
 		this(cellsX, cellsY, 20, 20);
@@ -29,14 +32,23 @@ public class OnOffGridJ7 extends JPanel {
 		this.cellWidth = cellWidth;
 		this.cellHeight = cellHeight;
 		setPreferredSize(new Dimension(cellsX * cellWidth, cellsY * cellHeight));
+
+		// Set a default model
+		setModel(new OnOffGridModel() {
+
+			public boolean getCellState(int x, int y) {
+				return false;
+			}
+		});
+
+		addMouseListener(this);
 	}
 
-	
 	public void paint(Graphics g2) {
-		Graphics2D g = (Graphics2D)g2;
+		Graphics2D g = (Graphics2D) g2;
 		for (int x = 0; x < cellsX; x++) {
 			for (int y = 0; y < cellsY; y++) {
-				boolean on = random.nextBoolean();
+				boolean on = model.getCellState(x, y);
 				Rectangle r = new Rectangle(x * cellWidth, y * cellHeight,
 						cellWidth, cellHeight);
 				g.setColor(on ? Color.BLACK : Color.WHITE);
@@ -46,12 +58,41 @@ public class OnOffGridJ7 extends JPanel {
 		}
 	}
 
-	public static void main(String[] args) {
-		JFrame frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.add(new OnOffGridJ7(15, 20));
-		frame.pack();
-		frame.setVisible(true);
-		
+	public void setModel(OnOffGridModel model) {
+		this.model = model;
+	}
+
+	public void addOnOffGridListener(OnOffGridListener l) {
+		listeners.add(l);
+	}
+
+	public void mouseClicked(MouseEvent e) {
+		notifyCellClicked(e.getX() / cellWidth, e.getY() / cellHeight);
+	}
+
+	public void mousePressed(MouseEvent e) {
+	}
+
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	public void mouseExited(MouseEvent e) {
+	}
+
+	private void notifyCellClicked(int x, int y) {
+		for (OnOffGridListener listener : listeners) {
+			listener.cellClicked(x, y);
+		}
+	}
+
+	interface OnOffGridModel {
+		boolean getCellState(int x, int y);
+	}
+
+	interface OnOffGridListener {
+		void cellClicked(int x, int y);
 	}
 }
