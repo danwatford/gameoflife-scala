@@ -44,7 +44,7 @@ object GofUI extends SimpleSwingApplication {
         model = GofModel.random(20, 20)
         grid.repaint
 
-      case CellClicked(`grid`, x, y) =>
+      case CellToggled(`grid`, x, y) =>
         model = model.toggleCell(Cell(x, y))
         grid.repaint
     }
