@@ -4,13 +4,17 @@ import java.awt.Color
 import java.awt.Dimension
 import java.awt.Graphics2D
 import java.awt.Rectangle
-
 import scala.swing.MainFrame
 import scala.swing.Panel
 import scala.swing.Publisher
 import scala.swing.SimpleSwingApplication
 import scala.swing.event.MouseClicked
 import scala.swing.event.UIEvent
+import javafx.scene.input.MouseButton
+import scala.swing.event.MouseButtonEvent
+import scala.swing.event.MouseReleased
+import java.awt.Point
+import scala.swing.event.MousePressed
 
 /**
  * A Panel which will draw a grid of cells as either On or Off according to a given function.
@@ -22,10 +26,23 @@ class OnOffGrid(val cellsX: Int, val cellsY: Int, cellWidth: Int = 20, cellHeigh
 
   listenTo(mouse.clicks)
 
+  var mouseDownCellX = -1;
+  var mouseDownCellY = -1;
+  
   reactions += {
-    case MouseClicked(_, point, _, _, _) => publish(CellClicked(this, point.x / cellWidth, point.y / cellHeight))
+    case MousePressed(_, point, _, _, _) =>
+      // Capture the cell that the mouse button was pressed in.
+      val (cellX, cellY) = pointToCell(point)
+      mouseDownCellX = cellX
+      mouseDownCellY = cellY
+    case MouseReleased(_, point, _, _, _) =>
+      // If the cell that the mouse button was released in is the same as where it was pressed, register a toggled cell.
+      val (cellX, cellY) = pointToCell(point)
+      if (cellX == mouseDownCellX && cellY == mouseDownCellY) publish(CellToggled(this, cellX, cellY))
   }
 
+  def pointToCell(point: Point): (Int, Int) = (point.x / cellWidth, point.y / cellHeight)
+  
   /** Function to determine whether a particular cell at position (x, y) should be on (true) or off (false). */
   var onOff: (Int, Int) => Boolean = { (_, _) => false }
 
@@ -46,6 +63,6 @@ class OnOffGrid(val cellsX: Int, val cellsY: Int, cellWidth: Int = 20, cellHeigh
 }
 
 /**
- * Event signalling that a grid cell has been clicked.
+ * Event signalling that a grid cell has been toggled.
  */
-case class CellClicked(source: OnOffGrid, x: Int, y: Int) extends UIEvent
+case class CellToggled(source: OnOffGrid, x: Int, y: Int) extends UIEvent
