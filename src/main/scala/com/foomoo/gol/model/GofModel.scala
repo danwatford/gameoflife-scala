@@ -43,6 +43,12 @@ class GofModel(cells: Set[Cell], cellFilter: Cell => Boolean) {
     if (getCells.contains(cell)) new GofModel(getCells - cell, cellFilter)
     else new GofModel(getCells + cell, cellFilter)
   }
+  
+  def diff(that: GofModel): Set[Cell] = {
+    val thisDiff = getCells filterNot(that.getCells.contains(_))
+    val thatDiff = that.getCells filterNot(getCells.contains(_))
+    thisDiff ++ thatDiff
+  }
 }
 
 object GofModel {
@@ -56,6 +62,6 @@ object GofModel {
       if Random.nextBoolean
     } yield Cell(x, y)
     
-    new GofModel(cells.toSet, (_ => true))
+    new GofModel(cells.toSet, (cell => cell.x >= 0 && cell.x < width && cell.y >= 0 && cell.y < height))
   }
 }
